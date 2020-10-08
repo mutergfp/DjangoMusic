@@ -7,25 +7,14 @@ from django import forms
 
 # Create your views here.
 def index(request):
+
+    if(request.method == "POST"):
+        form = Recherche(request.POST)
+        if(form.is_valid()):
+            return render(request, 'resultatRecherche.html')
+
     search_form = Recherche()
     return render(request, 'index.html', {'search': search_form})
-
-"""
-class RechercheArtiste(ModelForm):
-    class Meta:
-        model = Artiste
-        fields = ('nom_artiste',)
-
-class RechercheAlbum(ModelForm):
-    class Meta:
-        model = Album
-        fields = ('nom_album',)
-
-class RechercheMusique(ModelForm):
-    class Meta:
-        model = Musique
-        fields = ('titre_musique',)
-"""
 
 class Recherche(forms.Form):
     def __init__(self, *args, **kwargs):
