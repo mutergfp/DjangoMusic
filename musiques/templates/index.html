@@ -1,0 +1,17 @@
+{% extends 'baseTemplate.html' %}
+{% block title %}
+    Django Music
+{% endblock %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity ="sha384 -mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin ="anonymous">
+{% endblock %}
+{% block content %}
+    <div class="container d-flex flex-column justify-content-center align-items-center" style="height: 100vh;">
+        <div class="h1"><u>DJANGO MUSIC</u></div>
+        <form method="POST" style="width: 50vh;">
+            {% csrf_token %}
+            {{ search.search }}
+        </form>
+    </div>
+{% endblock %}
