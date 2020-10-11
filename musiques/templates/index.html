@@ -9,7 +9,7 @@
 {% block content %}
     <div class="container d-flex flex-column justify-content-center align-items-center" style="height: 100vh;">
         <div class="h1"><u>DJANGO MUSIC</u></div>
-        <form method="POST" style="width: 50vh;">
+        <form method="POST" style="width: 50vh;" action="">
             {% csrf_token %}
             {{ search.search }}
         </form>
