@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
 from django.forms import ModelForm
 from django.contrib import messages
-from musiques.models import Artiste, Musique, Album
+from musiques.models import Artiste, Musique, Album, Recherche
 from django import forms
 
 # Create your views here.
 
-class Recherche(forms.Form):
+class RechercheForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(Recherche, self).__init__(*args, **kwargs)
+        super(RechercheForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
 
@@ -17,7 +17,7 @@ class Recherche(forms.Form):
 
 def index(request):
     if(request.method == "POST"):
-        form = Recherche(request.POST)
+        form = RechercheForm(request.POST)
         if(form.is_valid()):
             return redirect('search/'+request.POST['search'])
     else:
@@ -26,6 +26,15 @@ def index(request):
 
 def resultSearch(request, text=None):
     if(text != None):
+        try: 
+            issetRecherche = Recherche.objects.get(contenu_recherche = text)
+        except Recherche.DoesNotExist:
+            r = Recherche(contenu_recherche=text, compteur_recherche=1)
+            r.save()
+        else:
+            issetRecherche.compteur_recherche += 1
+            issetRecherche.save()
+
         try:
             resultArtiste = Artiste.objects.get(nom_artiste = text)
         except Artiste.DoesNotExist:

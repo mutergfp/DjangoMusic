@@ -50,3 +50,7 @@ class Musique(models.Model):
 
     def __str__(self):
         return self.titre_musique
+
+class Recherche(models.Model):
+    contenu_recherche = models.CharField(verbose_name=("Contenu de la recherche"), max_length=255, null=False)
+    compteur_recherche = models.IntegerField(verbose_name=("Nombre de fois"), null=False, default=0)
