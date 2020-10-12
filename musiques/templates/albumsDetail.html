@@ -1,0 +1,43 @@
+{% extends 'baseTemplate.html' %}
+{% load static %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/albumDetail.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="d-flex align-items-center justify-content-center" id="presentation">
+        <img class="img-thumbnail" style="max-width: 200px; max-height: 200px;" src="/{{ album.image_album }}" alt="Image de l'album"/>
+        <div>
+            <h1>{{ album }}</h1>
+            <div>
+                <p><i class="fas fa-microphone"></i> {{ album.id_artiste }}</p>
+                <p><i class="fas fa-file-contract"></i> {{ album.id_label }}</p>
+            </div>
+            <div>
+                <p id='totalDuree'><script>totalDuree();</script></p>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Durée</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for musique in musiques %}
+            <tr>
+                <td>{{ musique.titre_musique }}</td>
+                <td class="duree">{{ musique.duree_musique }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    //return "".concat(minutes.toString(), ":", secondes.toString())
+ </script>
+{% endblock %}
+

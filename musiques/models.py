@@ -43,7 +43,7 @@ class Album(models.Model):
 
 class Musique(models.Model):
     titre_musique = models.CharField(verbose_name=("Titre de la musique"), max_length=255, null=False)
-    duree_musique = models.TimeField(verbose_name=("Durée de la musique"), null=False)
+    duree_musique = models.CharField(verbose_name=("Durée de la musique (MM:SS)"), max_length=6, null=False)
     #Relation ManyToMany ATTENTION
     id_artiste = models.ManyToManyField(Artiste, verbose_name=("Artiste(s) de la musique"))
     id_album = models.ForeignKey(Album, verbose_name=("Album de la musiques"), on_delete=models.CASCADE, related_name="albums")

@@ -20,12 +20,13 @@ def musiquesDetail(request, id):
 def artistesDetail(request, id):
     if id != None :
         artiste = Artiste.objects.get(id=id)
-    return render(request, template_name='index.html', context={'artiste': artiste})
+        return render(request, template_name='artistesDetail.html', context={'artiste': artiste})
 
 def albumsDetail(request, id):
     if id != None :
         album = Album.objects.get(id=id)
-    return render(request, template_name='index.html', context={'album': album})
+        musiques = Musique.objects.all().filter(id_album=album.id)
+        return render(request, template_name='albumsDetail.html', context={'album': album, 'musiques': musiques})
 
 def credit(request):
-    return render(request, template_name='index.html')
+    return render(request, template_name='credit.html')
