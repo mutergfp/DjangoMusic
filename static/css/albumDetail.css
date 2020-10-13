@@ -6,3 +6,7 @@ img{
 #presentation > *{
     margin: 5px;
 }
+
+#musiquesTable{
+    max-width: 80%;
+}

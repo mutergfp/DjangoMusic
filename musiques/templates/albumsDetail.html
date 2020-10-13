@@ -9,20 +9,23 @@
         <img class="img-thumbnail" style="max-width: 200px; max-height: 200px;" src="/{{ album.image_album }}" alt="Image de l'album"/>
         <div>
             <h1>{{ album }}</h1>
-            <div>
-                <p><i class="fas fa-microphone"></i> {{ album.id_artiste }}</p>
-                <p><i class="fas fa-file-contract"></i> {{ album.id_label }}</p>
-            </div>
-            <div>
-                <p id='totalDuree'><script>totalDuree();</script></p>
+            <div class="d-flex justify-content-between" id="infos">
+                <div>
+                    <p><i class="fas fa-microphone"></i> {{ album.id_artiste }}</p>
+                    <p><i class="fas fa-file-contract"></i> {{ album.id_label }}</p>
+                </div>
+                <div>
+                    <p><i class="fas fa-hourglass-start"> {{ extraData.totalTime}}</i></p>
+                    <p><i class="fas fa-compact-disc"></i> Genre</p>
+                </div>
             </div>
         </div>
     </div>
-    <table class="table">
+    <table class="table" style="max-width: 80%; margin: auto; background-color: #8FA970;">
         <thead>
             <tr>
-                <th>Titre</th>
-                <th>Durée</th>
+                <th scope="col">Titre</th>
+                <th scope="col">Durée</th>
             </tr>
         </thead>
         <tbody>
@@ -37,7 +40,6 @@
 {% endblock %}
 {% block js %}
     {{ block.super }}
-    //return "".concat(minutes.toString(), ":", secondes.toString())
- </script>
+</script>
 {% endblock %}
 
