@@ -10,7 +10,7 @@ TYPE_ALBUM = (
 class Artiste(models.Model):
     nom_artiste = models.CharField(verbose_name=("Nom de l'artiste"), max_length=255, null=False)
     description_artiste = models.TextField(verbose_name=("Description de l'artiste"), null=True)
-    image_artiste = models.ImageField(verbose_name=("Image de l'artiste"), upload_to="assets/img_albums", null=True, default="static/default/img_artiste_default-min.jpg")
+    image_artiste = models.ImageField(verbose_name=("Image de l'artiste"), upload_to="assets/img_albums", null=True, default="assets/default/img_artiste_default-min.jpg")
 
     def __str__(self):
         return self.nom_artiste
@@ -32,7 +32,7 @@ class Genre(models.Model):
 class Album(models.Model):
     nom_album = models.CharField(verbose_name=("Nom de la l'album"), max_length=100)
     type_album = models.CharField(verbose_name=("Type de l'album"), max_length=6, choices=TYPE_ALBUM)
-    image_album = models.ImageField(verbose_name=("Image de l'album"), upload_to="assets/img_artistes", null=False, default="static/assets/default/img_album_default-min.jpg")
+    image_album = models.ImageField(verbose_name=("Image de l'album"), upload_to="assets/img_artistes", null=False, default="assets/default/img_album_default-min.jpg")
     date_publication_album = models.DateField(verbose_name=("Date de parution de l'album"), null=True)
     id_artiste = models.ForeignKey(Artiste, verbose_name=("Artiste de l'album"), on_delete=models.CASCADE, null=False)
     id_label = models.ForeignKey(Label, verbose_name=("Label de l'album"), on_delete=models.CASCADE, null=False)

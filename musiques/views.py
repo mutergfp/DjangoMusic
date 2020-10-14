@@ -21,7 +21,12 @@ def musiquesDetail(request, id):
 def artistesDetail(request, id):
     if id != None :
         artiste = Artiste.objects.get(id=id)
-        return render(request, template_name='artistesDetail.html', context={'artiste': artiste})
+        albums = Album.objects.all().filter(id_artiste=artiste.id).order_by('-date_publication_album')
+        musiques = Musique.objects.none()
+        for album in albums:
+            musiques = musiques | Musique.objects.all().filter(id_album=album.id)
+            #musiques = {**musiques, **musiquesTmp}
+        return render(request, template_name='artistesDetail.html', context={'artiste': artiste, 'albums': albums, 'musiques': musiques})
 
 def albumsDetail(request, id):
     if id != None :

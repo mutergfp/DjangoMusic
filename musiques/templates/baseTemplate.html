@@ -16,7 +16,7 @@
         {% endblock %}
     </head>
     <body style="background-color: #E5E5E5; font-family: 'Oswald', sans-serif;">
-        <main role="main">
+        <main role="main" class="mt-3">
             {% block content %}
             {% endblock %}
         </main >
@@ -25,7 +25,11 @@
             <script src="{% static 'node_modules/jquery-slim/dist/jquery-slim.min.js' %}"></script>
             <script src="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.js' %}"></script>
             <script src="{% static 'node_modules/popper.js/dist/popper.min.js' %}"></script>
-            <script src="{% static 'functions/utils.js' %}"
+        {% endblock %}
+        {% block style %}
+        <style>
+
+        </style>
         {% endblock %}
     </body>
  </html>
