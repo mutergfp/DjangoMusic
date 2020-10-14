@@ -1,23 +1,12 @@
 from django.shortcuts import render, redirect
-<<<<<<< HEAD
 from django.http import HttpResponse, HttpRequest
 from django.forms import ModelForm
 from django.contrib import messages
 from musiques.models import Artiste, Musique, Album, Recherche
 from django import forms
-<<<<<<< HEAD
-=======
-from django.http import HttpResponse
-from django.forms import ModelForm
-from django.contrib import messages
-from musiques.models import Album, Artiste, Genre, Label, Musique
-import requests
 from musiques.functions.utils import totalDuree
->>>>>>> developLucas
-=======
 import requests
 from bs4 import BeautifulSoup
->>>>>>> developErwan
 
 # Create your views here.
 
@@ -67,8 +56,6 @@ def resultSearch(request, text=None):
         return render(request, 'resultatRecherche.html', {'text': text, 'artiste' : resultArtiste, 'album' : resultAlbum, 'musique': resultMusique})
     return render(request, template_name='index.html')
 
-def resultatRecherche(request):
-    return render(request, template_name='index.html')
 
 def musiquesDetail(request, id):
     if id != None :
@@ -106,5 +93,4 @@ def scrap_desc_artiste(artiste):
 
     ArtisteDescription = soup.find('div', class_ = "read")
     return ArtisteDescription.text
-
 
