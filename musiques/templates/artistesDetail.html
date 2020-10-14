@@ -1,0 +1,119 @@
+{% extends 'baseTemplate.html' %}
+{% load static %}
+{% block styles %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="d-flex align-items-center justify-content-center mb-4" id="presentation">
+        <img id="imgArtiste" class="img-thumbnail mr-2" src="{{ artiste.image_artiste.url }}" alt="Image d'artiste"/>
+        <div>
+            <h1>{{ artiste }}</h1>
+        </div>
+    </div>
+    <div class="jumbotron jumbotron-fluid" id="description">
+        <div class="container">
+    <p class="lead">{{ artiste.description_artiste }}</p>
+  </div>
+</div>
+<div id="albums" class="mb-4">
+    <h2 class="mb-4">Ses derniers albums</h2>
+    <div class="container">
+        <div class="row">
+            {% for album in albums%}
+            <div class="col-3 mb-2">
+                <div class="card">
+                    <img src="{{ album.image_album.url }}" class="card-img-top" alt="Image d'album">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ album.nom_album}}</h5>
+                        <p class="card-text"><i class="fas fa-calendar-day"></i> {{ album.date_publication_album}}</p>
+                        <a href="{% url 'albumsDetail' id=album.id%}" class="btn btn-primary">Voir l'album</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 mb-2">
+                <p>Pas d'albums trouvés pour cet artiste</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div id="musiquesList">
+    <h2 class="mb-4">Quelques titres</h2>
+    <table class="table" id="musiques">
+        <thead>
+            <tr class="d-flex">
+                <th class="col-8">Titre</th>
+                <th class="col-1">Durée</th>
+                <th class="col-3">Ajouter a une playlist</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for musique in musiques %}
+            
+            <tr class="d-flex">
+                <td class="col-8">{{ musique.titre_musique }}</td>
+                <td class="col-1">{{ musique.duree_musique }}</td>
+                <td class="col-3">
+                    <a class="options" style="text-decoration: none;"href="#">
+                        <i class="far fa-heart"></i>
+                        <i class="fas fa-heart"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Pas de musiques trouvées pour cet artiste</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div> 
+{% endblock %}
+{% block style %}
+<style>
+    #imgArtiste{
+        max-width: 300px !important; 
+        max-height: 300px !important;
+    }
+    .card{
+        height: 100%;
+    }
+    #description{
+        background-color: #8FA970;
+    }
+    #albums, #musiquesList{
+        margin: 0 10% 0 10%;
+    }
+    .card{
+        text-align:center;
+    }
+    .btn-primary{
+        background-color: #8163A4;
+        border: #8163A4
+    }
+    .btn-primary:hover{
+        background-color: #654d80;
+        border: #654d80;
+    }
+    tbody tr{
+        background-color: #8FA970;
+    }
+    tbody tr:nth-child(2n){
+        background-color: #5d7245;
+    }
+    .options{
+        text-decoration: none;
+        color: #8163A4;
+    }
+    .options:hover{
+        color: #654d80;
+    }
+    .options:hover .far, .options .fas {
+        display: none;
+    }
+    .options:hover .fas {
+        display: inline;
+    }
+</style>
+{% endblock %}

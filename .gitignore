@@ -133,3 +133,5 @@ dmypy.json
 # ADDED BY USER
 node_modules/
 .DS_Store
+img_albums/
+img_artistes/

@@ -22,3 +22,5 @@ admin.site.register(Label, LabelAdmin)
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Album, AlbumAdmin)
 admin.site.register(Musique, MusiqueAdmin)
+
+    
