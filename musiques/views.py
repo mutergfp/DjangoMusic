@@ -21,7 +21,7 @@ def index(request):
         if(form.is_valid()):
             return redirect('search/'+request.POST['search'])
     else:
-        search_form = Recherche()
+        search_form = RechercheForm()
         return render(request, 'index.html', {'search': search_form})
 
 def resultSearch(request, text=None):
@@ -52,4 +52,11 @@ def resultSearch(request, text=None):
 
         return render(request, 'resultatRecherche.html', {'text': text, 'artiste' : resultArtiste, 'album' : resultAlbum, 'musique': resultMusique})
 
-    
+def scrap_desc_artiste(artiste):
+    html = requests.get("https://www.allformusic.fr/.{artiste}"+format(artiste)).text
+
+    soup = BeautifulSoup(html, 'lxml')
+
+    ArtisteDescription = soup.find('div', class_ = "read")
+    return ArtisteDescription.text
+
