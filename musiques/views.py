@@ -4,6 +4,8 @@ from django.forms import ModelForm
 from django.contrib import messages
 from musiques.models import Artiste, Musique, Album, Recherche
 from django import forms
+import requests
+from bs4 import BeautifulSoup
 
 # Create your views here.
 
