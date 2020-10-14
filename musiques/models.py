@@ -36,11 +36,7 @@ class Genre(models.Model):
 class Album(models.Model):
     nom_album = models.CharField(verbose_name=("Nom de la l'album"), max_length=100)
     type_album = models.CharField(verbose_name=("Type de l'album"), max_length=6, choices=TYPE_ALBUM)
-<<<<<<< HEAD
-    image_album = models.ImageField(verbose_name=("Image de l'album"), upload_to="assets/img_artistes", null=False, default="static/assets/default/img_album_default-min.jpg")
-=======
     image_album = models.ImageField(verbose_name=("Image de l'album"), upload_to="assets/img_artistes", null=False, default="assets/default/img_album_default-min.jpg")
->>>>>>> developLucas
     date_publication_album = models.DateField(verbose_name=("Date de parution de l'album"), null=True)
     id_artiste = models.ForeignKey(Artiste, verbose_name=("Artiste de l'album"), on_delete=models.CASCADE, null=False)
     id_label = models.ForeignKey(Label, verbose_name=("Label de l'album"), on_delete=models.CASCADE, null=False)
