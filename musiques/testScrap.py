@@ -1,24 +1,19 @@
-import requests
-import json
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
+cid ="b462b99712f64dcb94f3aab35a21827a"
+secret="cf75ea5330b44a8d8024d8ecc31c8b52"
 
+client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
+sp = spotipy.Spotify(client_credentials_manager
+=
+client_credentials_manager)
 
+name="Booba"
 
-def get_account_info():
+artistes = sp.search(q="artist:"+name, type="artist")
 
-    api_ID = "b462b99712f64dcb94f3aab35a21827a"
-    api_link = "https://accounts.spotify.com/authorize"
+print(artistes['artists']['href'])
 
-    entetes = {'Content-Type': 'application/json',
-               'Authorization': 'Bearer {0}'.format(api_ID)}
-
-    api_url = '{0}account'.format(api_link)
-
-    response = requests.get(api_url, headers=entetes)
-
-    if response.status_code == 200:
-        return json.loads(response.content.decode('utf-8'))
-    else:
-        return None
-
-print(get_account_info())
+for artiste in artistes['artists']['items']:
+    print(artiste['name'])
