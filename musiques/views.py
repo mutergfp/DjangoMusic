@@ -30,33 +30,33 @@ def index(request):
         return render(request, 'index.html', {'search': search_form})
 
 def resultSearch(request, text=None):
+
     if(text != None):
         try: 
             issetRecherche = Recherche.objects.get(contenu_recherche = text)
         except Recherche.DoesNotExist:
-            r = Recherche(contenu_recherche=text, compteur_recherche=1)
-            r.save()
             spotify_create_artiste(text)
         else:
             issetRecherche.compteur_recherche += 1
             issetRecherche.save()
 
         try:
-            resultArtiste = Artiste.objects.get(nom_artiste = text)
+            resultArtiste = Artiste.objects.filter(nom_artiste__contains = text)
         except Artiste.DoesNotExist:
             resultArtiste = "Aucun résultat trouvé"
         
         try:
-            resultAlbum = Album.objects.get(nom_album = text)
+            resultAlbum = Album.objects.filter(nom_album__contains = text)
         except Album.DoesNotExist:
             resultAlbum = "Aucun résultat trouvé"
         
         try:
-            resultMusique = Musique.objects.get(titre_musique = text)
+            resultMusique = Musique.objects.filter(titre_musique__contains = text)
         except Musique.DoesNotExist:
             resultMusique = "Aucun résultat trouvé"
 
         return render(request, 'resultatRecherche.html', {'text': text, 'artiste' : resultArtiste, 'album' : resultAlbum, 'musique': resultMusique})
+
     return render(request, template_name='index.html')
 
 
@@ -89,9 +89,18 @@ def albumsDetail(request, id):
 def credit(request):
     return render(request, template_name='credit.html')
 
+def replace_special(texte):
+    accent = ['é', 'è', 'ê', 'à', 'ù', 'û', 'ç', 'ô', 'î', 'ï', 'â', ' ', '\'']
+    sans_accent = ['e', 'e', 'e', 'a', 'u', 'u', 'c', 'o', 'i', 'i', 'a', '-', '-']
+    i = 0
+    while i < len(accent):
+        texte = texte.replace(accent[i], sans_accent[i])
+        i += 1
+    return texte
+
 def scrap_desc_artiste(artiste):
  
-    html = requests.get("https://www.allformusic.fr/"+artiste.lower()).text
+    html = requests.get("https://www.allformusic.fr/"+replace_special(artiste.lower())).text
 
     soup = BeautifulSoup(html, 'lxml')
 
@@ -113,13 +122,24 @@ def spotify_create_artiste(name_artiste):
 
     artistes = sp.search(q="artist:"+name_artiste, type="artist")
     tab = []
-
-    for artiste in artistes['artists']['items']:
-        tab.append(artiste['name'])
-
+    img = []
     desc = []
-
-    for i in range(len(tab)):
-        desc.append(scrap_desc_artiste(tab[i]))
-        A = Artiste(nom_artiste=tab[i], description_artiste=desc[i])
+    i = 0
+    for artiste in artistes['artists']['items']:
+        img.append(artiste['images'])
+        A = Artiste(nom_artiste=artiste['name'], description_artiste=scrap_desc_artiste(artiste['name']), image_artiste=img[i][0]['url'])
         A.save()
+        r = Recherche(contenu_recherche=artiste['name'], compteur_recherche=1)
+        r.save()
+        i+=1
+
+    #     tab.append(artiste['name'])
+    #     img.append(artiste['images'])
+    #     desc.append(scrap_desc_artiste(artiste['name']))
+    
+    # for i in range(len(tab)):
+    #     A = Artiste(nom_artiste=tab[i], description_artiste=desc[i], image_artiste=img[i][0]['url'])
+    #     A.save()
+    #     r = Recherche(contenu_recherche=tab[i], compteur_recherche=1)
+    #     r.save()
+

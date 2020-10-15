@@ -9,8 +9,8 @@ TYPE_ALBUM = (
 )
 class Artiste(models.Model):
     nom_artiste = models.CharField(verbose_name=("Nom de l'artiste"), max_length=255, null=False)
-    description_artiste = models.TextField(verbose_name=("Description de l'artiste"), null=True)
-    image_artiste = models.ImageField(verbose_name=("Image de l'artiste"), upload_to="assets/img_albums", null=True, default="assets/default/img_artiste_default-min.jpg")
+    description_artiste = models.TextField(verbose_name=("Description de l'artiste"), null=True, default="Pas de description disponnible pour cet artiste.")
+    image_artiste = models.ImageField(verbose_name=("Image de l'artiste"), upload_to="assets/img_albums", null=True, default="/assets/default/img_artiste_default-min.jpg")
 
     def __str__(self):
         return self.nom_artiste
