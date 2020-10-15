@@ -24,7 +24,7 @@ def replace_special(texte):
         i += 1
     return texte
 
-def spotify_create_artiste(name_artiste):
+def spotify_create_album(name_album):
     cid ="b462b99712f64dcb94f3aab35a21827a"
     secret="cf75ea5330b44a8d8024d8ecc31c8b52"
 
@@ -33,25 +33,15 @@ def spotify_create_artiste(name_artiste):
     =
     client_credentials_manager)
 
-    artistes = sp.search(q="artist:"+name_artiste, type="artist")
-    tab = []
-    img = []
-    desc = []
+    albums = sp.search(q="album:"+name_album, type="album")
+    
+    for album in albums['albums']['items']:
+        print(album['artists'][0]['name']+" : "+album['name']+". Image : "+album['images'][0]['url']+". Type : "+album['album_type']+". Date de parution : "+album['release_date'])
 
-    i = 0
+    print(albums['albums']['items'][0])  
 
-    for artiste in artistes['artists']['items']:
-        img.append(artiste['images'])
-        print(img[i][0]['url'])
-        i+=0
+    # for artiste in albums['artists']['items']:
+    #     print(artiste)
+    #     print('\n')
 
-
-    # for i in range(10):
-                    
-    #     desc.append(scrap_desc_artiste(tab[i]))
-    #     print()
-    #     A.save()
-    #     r = Recherche(contenu_recherche=tab[i], compteur_recherche=1)
-    #     r.save()
-
-spotify_create_artiste("Vald")
+spotify_create_album("Dans la légende")

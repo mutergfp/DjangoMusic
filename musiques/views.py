@@ -44,16 +44,9 @@ def resultSearch(request, text=None):
             resultArtiste = Artiste.objects.filter(nom_artiste__contains = text)
         except Artiste.DoesNotExist:
             resultArtiste = "Aucun résultat trouvé"
-        
-        try:
-            resultAlbum = Album.objects.filter(nom_album__contains = text)
-        except Album.DoesNotExist:
-            resultAlbum = "Aucun résultat trouvé"
-        
-        try:
-            resultMusique = Musique.objects.filter(titre_musique__contains = text)
-        except Musique.DoesNotExist:
-            resultMusique = "Aucun résultat trouvé"
+
+        resultAlbum = "Aucun résultat trouvé"
+        resultMusique = "Aucun résultat trouvé"
 
         return render(request, 'resultatRecherche.html', {'text': text, 'artiste' : resultArtiste, 'album' : resultAlbum, 'musique': resultMusique})
 
@@ -105,7 +98,7 @@ def scrap_desc_artiste(artiste):
     soup = BeautifulSoup(html, 'lxml')
 
     ArtisteDescription = soup.find('div', class_ = "read")
-    if(ArtisteDescription == None):
+    if(ArtisteDescription == None or ArtisteDescription.text == "La page que vous demandez n'existe pas."):
         return "Pas de description disponnible pour cet artiste"
     else:
         return ArtisteDescription.text
@@ -116,30 +109,42 @@ def spotify_create_artiste(name_artiste):
     secret="cf75ea5330b44a8d8024d8ecc31c8b52"
 
     client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
-    sp = spotipy.Spotify(client_credentials_manager
-    =
-    client_credentials_manager)
+    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     artistes = sp.search(q="artist:"+name_artiste, type="artist")
-    tab = []
-    img = []
-    desc = []
     i = 0
     for artiste in artistes['artists']['items']:
-        img.append(artiste['images'])
-        A = Artiste(nom_artiste=artiste['name'], description_artiste=scrap_desc_artiste(artiste['name']), image_artiste=img[i][0]['url'])
-        A.save()
-        r = Recherche(contenu_recherche=artiste['name'], compteur_recherche=1)
-        r.save()
-        i+=1
+        if not artistes['artists']['items'][i]['images']:
+            A = create_one_artiste(artiste['name'], scrap_desc_artiste(artiste['name']))
+        else:
+            A = create_one_artiste(artiste['name'], scrap_desc_artiste(artiste['name']), artistes['artists']['items'][i]['images'][0]['url'])
+        create_one_recherche(artiste['name'])
+        i+=1 
 
-    #     tab.append(artiste['name'])
-    #     img.append(artiste['images'])
-    #     desc.append(scrap_desc_artiste(artiste['name']))
-    
-    # for i in range(len(tab)):
-    #     A = Artiste(nom_artiste=tab[i], description_artiste=desc[i], image_artiste=img[i][0]['url'])
-    #     A.save()
-    #     r = Recherche(contenu_recherche=tab[i], compteur_recherche=1)
-    #     r.save()
+def create_one_artiste(nom, description=None, image=None):
+    if(image == None):
+        A = Artiste(nom_artiste=nom, description_artiste=description)
+    elif(description == None): 
+        A = Artiste(nom_artiste=nom, image_artiste=image)
+    elif(description == None and image == None):
+        A = Artiste(nom_artiste=nom)
+    else:
+        A = Artiste(nom_artiste=nom, description_artiste=description, image_artiste=image)
+    A.save()
+
+def create_one_recherche(contenu):
+    r = Recherche(contenu_recherche=contenu)
+    r.save()
+
+def create_one_album(nom, type, image=None, date=None, artiste):
+    if(image == None):
+        A = Album(nom_album=nom, type_album=type, date_publication_album=date, id_artiste=artiste)
+    elif(date==None):
+        A = Album(nom_album=nom, type_album=type, image_album=image, id_artiste=artiste)
+    elif(date == None and image == None):
+        A = Album(nom_album=nom, type_album=type, id_artiste=artiste)
+    else:
+        A = Album(nom_album=nom, type_album=type, image_album=image, date_publication_album=date, id_artiste=artiste)
+    A.save()
+
 
