@@ -25,7 +25,7 @@
     <table class="table" id="musiques">
         <thead>
             <tr class="d-flex">
-                <th class="col-8">Titre</th>
+                <th class="col-8 titre">Titre</th>
                 <th class="col-1">Durée</th>
                 <th class="col-3">Ajouter à une playlist</th>
             </tr>
@@ -34,7 +34,7 @@
             {% for musique in musiques %}
 
             <tr class="d-flex">
-                <td class="col-8">{{ musique.titre_musique }}</td>
+                <td class="col-8 titre">{{ musique.titre_musique }}</td>
                 <td class="col-1">{{ musique.duree_musique }}</td>
                 <td class="col-3">
                     <a class="options" style="text-decoration: none;"href="#">
@@ -52,6 +52,7 @@
     </table>
 {% endblock %}
 {% block style %}
+{{ block.super }}
 <style type='text/css'>
     img{
         max-width: 300px !important; 
@@ -59,7 +60,8 @@
     }
     #musiques{
         max-width: 80%; 
-        margin: auto; 
+        margin: auto;
+        text-align: center
     }
     tbody tr{
         background-color: #8FA970;
@@ -79,6 +81,9 @@
     }
     .options:hover .fas {
         display: inline;
+    }
+    .titre{
+        text-align: left;
     }
 </style>
 {% endblock %}

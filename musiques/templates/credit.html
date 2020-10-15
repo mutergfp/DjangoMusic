@@ -1,12 +1,23 @@
 {% extends 'baseTemplate.html'%}
 {% block content %}
-<p>Ce site a été réalisé en Python avec le framework Django</p>
-<p>Projet universitaire de l'IUT d'Orléans</p>
-<p>Etudiants :</p>
-<ul>
-    <li>DESNOUE Lucas</li>
-    <li>GAY-CHANTELOUP Erwan</li>
-</ul>
-<p>Formation : License Professionelle</p>
-<p>Promotion : 2020-2021</p>
+<div id='content'>
+    <p>Ce site a été réalisé en Python avec le framework Django</p>
+    <p>Projet universitaire de l'IUT d'Orléans</p>
+    <p>Etudiants :</p>
+    <ul>
+        <li>DESNOUE Lucas</li>
+        <li>GAY-CHANTELOUP Erwan</li>
+    </ul>
+    <p>Formation : License Professionelle</p>
+    <p>Promotion : 2020-2021</p>
+</div>
+{% endblock %}
+{% block style %}
+{{ block.super }}
+<style>
+    #content{
+        width: 85%;
+        margin: auto;
+    }
+</style>
 {% endblock %}

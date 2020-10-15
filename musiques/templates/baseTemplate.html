@@ -16,7 +16,15 @@
         {% endblock %}
     </head>
     <body style="background-color: #E5E5E5; font-family: 'Oswald', sans-serif;">
-        <main role="main" class="mt-3">
+        <header class="d-flex align-items-center justify-content-center">
+            <div id='divHeader' class='d-flex align-items-center justify-content-between w-80'>
+            <h1><a href="{% url 'index' %}">DjangoMusic</a></h1>
+            <form method="POST" style="width: 80vh;" action="">
+                {% csrf_token %}
+                {{ search.search }}
+            </form>
+        </header>
+        <main role="main">
             {% block content %}
             {% endblock %}
         </main >
@@ -28,9 +36,30 @@
         {% endblock %}
         {% block style %}
         <style>
-            main{
-                margin: 0 10% 0 10%
+            header{
+                width: 100%;
+                height: 100px;
+                background-color: #8FA970;
+                position: fixed;
+                top: 0px;
+                z-index: 1;
             }
+            main{
+                margin-top: 130px;
+            }
+            #divHeader{
+                display: flex;
+                width: 80%;
+            }
+            a{
+                text-decoration: none;
+                color: #8163A4;
+            }
+            a:hover{
+                color: #654d80;
+                text-decoration: none;
+            }
+
         </style>
         {% endblock %}
     </body>

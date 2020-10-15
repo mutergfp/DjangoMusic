@@ -1,23 +1,21 @@
 {% extends 'baseTemplate.html' %}
 {% block content %}
-    <div class="row">
+    <div class="row mb-5" >
         <div class="col-md-2"></div>
-        <div class="col-md-8 h1 text-center"><u>DJANGO MUSIC</u></div>
-        <div class="col-md-2"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8 text-center">Résultat pour la recherche : {{ text }}</div>
+        <div class="col-md-8 text-center h3">Résultat pour la recherche : {{ text }}</div>
         <div class="col-md-2"></div>
     </div>
     <div class="row">
-        <div class="col-md h3 text-center">Artiste</div>
-        <div class="col-md h3 text-center">Album</div>
-        <div class="col-md h3 text-center">Musique</div>
+        <div class="col-md h4 text-center">Artiste</div>
+        <div class="col-md h4 text-center">Album</div>
+        <div class="col-md h4 text-center">Musique</div>
     </div>
     <div class="row">
-        <div class="col-md h3 text-center">{{ artiste }}</div>
-        <div class="col-md h3 text-center">{{ album }}</div>
-        <div class="col-md h3 text-center">{{ musique }}</div>
+        <div class="col-md text-center results">{{ artiste }}</div>
+        <div class="col-md text-center">{{ album }}</div>
+        <div class="col-md text-center">{{ musique }}</div>
     </div>
+{% endblock %}
+{% block style %}
+    {{ block.super }}
 {% endblock %}
