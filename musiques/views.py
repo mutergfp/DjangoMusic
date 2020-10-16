@@ -2,11 +2,18 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
 from django.forms import ModelForm
 from django.contrib import messages
-from musiques.models import Artiste, Musique, Album, Recherche
+from musiques.models import Artiste, Musique, Album, Recherche, Playlist
 from django import forms
 from musiques.functions.utils import totalDuree
 import requests
 from bs4 import BeautifulSoup
+
+#Dépendances utilisateur
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 
@@ -24,8 +31,8 @@ def traitementRecherche(request):
         form = RechercheForm(request.POST)
         if(form.is_valid()):
             return redirect('/search/'+request.POST['search'])
-    else:
-        return RechercheForm()
+    
+    return RechercheForm()
 
 
 def index(request):
@@ -33,7 +40,7 @@ def index(request):
     if not isinstance(search_form, RechercheForm):
         return search_form
     else:
-        return render(request, 'index.html', {'search': search_form})
+        return render(request, 'index.html', {'search': search_form, })
 
 def resultSearch(request, text=None):
     search_form = traitementRecherche(request)
@@ -122,3 +129,83 @@ def scrap_desc_artiste(artiste):
     ArtisteDescription = soup.find('div', class_ = "read")
     return ArtisteDescription.text
 
+
+####### Utilisateur #######
+
+class LoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['placeholder'] = "Nom de compte"
+        self.fields['password'].widget.attrs['placeholder'] = "Mot de passe"
+        for visible in self.visible_fields():
+            visible.label= ""
+            visible.field.widget.attrs['class'] = 'form-control mb-3'
+
+    def confirm_login_allowed(self, user):
+        pass
+
+class RegisterForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['placeholder'] = "Nom de compte"
+        self.fields['password1'].widget.attrs['placeholder'] = "Mot de passe"
+        self.fields['password2'].widget.attrs['placeholder'] = "Confirmation du mot de passe"
+        self.fields['username'].help_text = " "
+        self.fields['password1'].help_text = "<ul><li>Votre mot de passe ne doit pas être une information personnelle</li><li>Votre mot de passe doit contenir 8 caractères minimum</li><li>Votre mot de passe ne peut pas être des chiffres seulement</li></ul>"
+        self.fields['password2'].help_text = "Entrez le même mot de passe que le précédent"
+        for visible in self.visible_fields():
+            visible.label= ""
+            visible.field.widget.attrs['class'] = 'form-control'
+#Connexion
+
+def sign_up(request):
+    search_form = traitementRecherche(request)
+    if not isinstance(search_form, RechercheForm):
+        return search_form
+    else:
+        if (request.method == "POST"):
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, "Compte connecté")
+                return render(request, 'index.html', {'search': search_form })
+    form = LoginForm()
+    return render(request, template_name='sign_up.html', context={'formLog': form, 'search': search_form})
+
+#Insciption   
+def sign_in(request):
+    search_form = traitementRecherche(request)
+    if not isinstance(search_form, RechercheForm):
+        return search_form
+    else:
+        if request.method == "POST":
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Compte enregistré")
+                return redirect('/')
+        else:
+            form = RegisterForm()
+            return render(request, template_name='sign_in.html', context={'formLog': form, 'search': search_form})
+
+@login_required(login_url='/sign_up')
+def compte(request):
+    search_form = traitementRecherche(request)
+    if not isinstance(search_form, RechercheForm):
+        return search_form
+    else:
+        user = request.user
+        playlists=Playlist.objects.all().filter(id_user=user.id)
+        return render(request, template_name='compte.html', context={'search' : search_form, 'playlists' : playlists})
+
+def getUser(request):
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+    return user
+    
+def logoutUser(request):
+    logout(request)
+    return redirect('/')

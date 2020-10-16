@@ -23,6 +23,18 @@
                 {% csrf_token %}
                 {{ search.search }}
             </form>
+            {% if user.is_authenticated %}
+            <div>
+                <a href="{% url 'compte' %}"class="btn btn-primary">Mon Compte</a>
+                <a href="{% url 'logoutUser' %}" class="btn btn-primary">Déconnexion</a>
+            </div>
+            {% else %}
+            <div>
+                <a href="{% url 'sign_in' %}" class="btn btn-primary">Inscription</a>
+                <a href="{% url 'sign_up' %}" class="btn btn-primary">Connexion</a>
+            </div>
+            {% endif %}
+
         </header>
         <main role="main">
             {% block content %}
@@ -59,7 +71,17 @@
                 color: #654d80;
                 text-decoration: none;
             }
-
+                .btn-primary{
+                background-color: #8163A4;
+                border: #8163A4
+            }
+            .btn-primary:hover{
+                background-color: #654d80;
+                border: #654d80;
+            }
+            #login{
+                margin-top: auto;
+            }
         </style>
         {% endblock %}
     </body>

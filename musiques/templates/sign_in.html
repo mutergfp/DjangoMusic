@@ -1,0 +1,21 @@
+{% extends 'baseTemplate.html' %}
+{% load static %}
+{% block content %}
+    <h1 id="title" class='mb-4'>INSCRIPTION</h1>
+    <form method="POST" action="" class="d-flex flex-column justify-content-center align-items-center w-50 m-auto" id='loginForm'>
+                {% csrf_token %}
+                {{ formLog }}
+                <input type="submit" value="S'inscire"class='mt-2' />
+    </form>
+{% endblock content %}
+{% block style %}
+    {{block.super}}
+    <style>
+        #title{
+            text-align: center;
+        }
+        .helptext{
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock style %}

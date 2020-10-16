@@ -1,0 +1,18 @@
+{% extends 'baseTemplate.html' %}
+{% load static %}
+{% block content %}
+    <h1 id="title" class='mb-4'>CONNEXION</h1>
+    <form method="POST" action="{% url 'sign_up' %}" class="d-flex flex-column justify-content-center align-items-center w-50 m-auto" id='loginForm'>
+                {% csrf_token %}
+                {{ formLog }}
+                <input type="submit" value="Se connecter" class='mt-2'/>
+    </form>
+{% endblock content %}
+{% block style %}
+    {{block.super}}
+    <style>
+        #title{
+            text-align: center;
+        }
+    </style>
+{% endblock style %}
