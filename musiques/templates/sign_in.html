@@ -5,11 +5,11 @@
     <form method="POST" action="" class="d-flex flex-column justify-content-center align-items-center w-50 m-auto" id='loginForm'>
                 {% csrf_token %}
                 {{ formLog }}
-                <input type="submit" value="S'inscire"class='mt-2' />
+                <input type="submit" value="S'inscire"class='btn btn-primary' />
     </form>
 {% endblock content %}
 {% block style %}
-    {{block.super}}
+    {{ block.super }}
     <style>
         #title{
             text-align: center;

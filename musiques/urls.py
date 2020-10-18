@@ -14,7 +14,8 @@ urlpatterns = [
     path('sign_up', views.sign_up, name='sign_up'),
     path('sign_in', views.sign_in, name="sign_in"),
     path('logout', views.logoutUser, name="logoutUser"),
-    path('compte', views.compte, name='compte')
+    path('compte', views.compte, name='compte'),
+    path('compte/addPlaylist/', views.addPlaylist, name='addPlaylist')
 ]
 
 if settings.DEBUG: 
