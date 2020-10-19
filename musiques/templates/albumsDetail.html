@@ -12,11 +12,11 @@
             <h3>{{ album.id_genre}}</h3>
             <div class="d-flex justify-content-between" id="infos">
                 <div>
-                    <p><i class="fas fa-microphone"></i> {{ album.id_artiste }}</p>
+                    <a href="{% url 'artistesDetail' id=album.id_artiste.id %}"><i class="fas fa-microphone"></i> {{ album.id_artiste }}</a>
                     <p><i class="fas fa-file-contract"></i> {{ album.id_label }}</p>
                 </div>
                 <div>
-                    <p><i class="fas fa-hourglass-start"> {{ extraData.totalTime}}</i></p>
+                    <p><i class="fas fa-hourglass-start"> {{ extraData.totalTime }}</i></p>
                     <p><i class="fas fa-compact-disc"></i> {{ album.type_album }}</p>
                 </div>
             </div>

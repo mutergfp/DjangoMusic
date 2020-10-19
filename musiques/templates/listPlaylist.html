@@ -1,0 +1,54 @@
+{% extends 'baseTemplate.html' %}
+{% load static %}
+{% block content %}
+    <div class="d-flex align-items-center justify-content-center m-auto" id="presentation">
+        <img class="img-thumbnail mr-2" src="{{ playlist.image_playlist.url }}" alt="Image de l'album"/>
+        <div class="w-100">
+        <h1>{{ playlist.nom_playlist }}</h1>
+        <table class="table" id="musiques">
+            <thead>
+                <tr class="d-flex">
+                    <th class="col-3">Titre</th>
+                    <th class="col-3">Album</th>
+                    <th class="col-3">Artiste</th>
+                    <th class="col-3">Durée</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for musique in musiques %}
+                <tr class="d-flex">
+                    <td class="col-3">{{ musique.titre_musique }}</td>
+                    <td class="col-3"><a href="{% url 'albumsDetail' id=musique.id_album.id%}">{{ musique.id_album}}</a></td>
+                    <td class="col-3"><a href="{% url 'artistesDetail' id=musique.id_album.id_artiste.id%}">{{ musique.id_album.id_artiste}}</a></td>
+                    <td class="col-3">{{ musique.duree_musique }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">Pas de musiques trouvées pour cet album</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+{% endblock content %}
+{% block style %}
+    {{ block.super }}
+    <style type='text/css'>
+    #presentation{
+        width: 80%;
+    }
+    img{
+        max-width: 300px !important; 
+        max-height: 300px !important;
+    }
+    #musiques{
+    }
+    tbody tr{
+        background-color: #8FA970;
+    }
+    tbody tr:nth-child(2n){
+        background-color: #5d7245;
+    }
+    </style>
+{% endblock style %}

@@ -256,8 +256,28 @@ def addPlaylist(request):
                 messages.success(request ,'Playlist créée')
                 return redirect('compte')
     form = PlaylistForm()
-    return render(request, template_name='addPlaylist.html', context={'form': form})
+    return render(request, template_name='addPlaylist.html', context={'search' : search_form, 'form': form})
 
+def listPlaylist(request, id=None):
+    search_form = traitementRecherche(request)
+    if not isinstance(search_form, RechercheForm):
+        return search_form
+    if id == None:
+        return redirect('index')
+    playlist=Playlist.objects.get(id=id)
+    musiques=playlist.id_musique.all()
+    artistes=[]
+    for musique in musiques:
+        album = Album.objects.get(id=musique.id_album.id)
+        artistes.append(Artiste.objects.get(id=album.id_artiste.id))
+    return render(request, template_name='listPlaylist.html', context={'search' : search_form, 'playlist': playlist, 'musiques': musiques, 'artistes': artistes})
+
+def deletePlaylist(request, id=None):
+    if id != None:
+        if(Playlist.objects.get(id=id)):
+            Playlist.objects.get(id=id).delete()
+    return redirect('compte')
+        
 # @login_required
 # def editPlaylist(request, id=None):
 #     search_form = traitementRecherche(request)

@@ -15,7 +15,9 @@ urlpatterns = [
     path('sign_in', views.sign_in, name="sign_in"),
     path('logout', views.logoutUser, name="logoutUser"),
     path('compte', views.compte, name='compte'),
-    path('compte/addPlaylist/', views.addPlaylist, name='addPlaylist')
+    path('compte/addPlaylist/', views.addPlaylist, name='addPlaylist'),
+    path('compte/playlists/<int:id>', views.listPlaylist, name='listPlaylist'),
+    path('compte/deletePlaylist/<int:id>', views.deletePlaylist, name='deletePlaylist')
 ]
 
 if settings.DEBUG: 

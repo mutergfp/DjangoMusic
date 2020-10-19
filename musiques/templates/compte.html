@@ -2,7 +2,6 @@
 
 {% block content %}
 <div id="compte">
-    
     <h2 class="mb-4">Compte de {{ user.username}}</h2>
     <div class="container">
         <div class="mb-4 d-flex">
@@ -15,14 +14,14 @@
             {% for playlist in playlists%}
             <div class="col-3 mb-2">
                 <div class="card">
-                    <img src="{{ playlist.image_playlist.url }}" class="card-img-top" alt="Image de playlist">
+                    <img src="{{ playlist.image_playlist.url }}" class="card-img-top" alt="Image de playlist" />
                     <div class="card-body">
                         <h5 class="card-title">{{ playlist.nom_playlist }}</h5>
-                        <a href="#" class="btn btn-primary mb-2">Voir l'album</a>
+                        <a href="{% url 'listPlaylist' id=playlist.id%}" class="btn btn-primary mb-2">Voir la playlist</a>
                         <div class="d-flex justify-content-end">
                             <a href="#" class="mr-1"><i class="fas fa-edit"></i></a>
-                            <a href="#" class="delete"><i class="fas fa-times"></i></a>
-                        <div>
+                            <a href="{% url 'deletePlaylist' id=playlist.id %}" class="delete"><i class="fas fa-times"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
