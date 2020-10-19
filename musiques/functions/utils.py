@@ -99,10 +99,6 @@ def spotify_create_album(nom_album):
         except Album.DoesNotExist:
             create_one_album(album['name'], album['artists'][0]['name'])
         
-
-    # for album in albums['albums']['items']:
-    #     print(album['artists'][0]['name']+" : "+album['name']+". Image : "+album['images'][0]['url']+". Type : "+album['album_type']+". Date de parution : "+album['release_date'])
-
 def create_one_album(nom_album, nom_art):
     import spotipy
     from spotipy.oauth2 import SpotifyClientCredentials
@@ -114,8 +110,7 @@ def create_one_album(nom_album, nom_art):
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
     genreA = ""
     albums = sp.search(q="album:"+nom_album, type="album")
-    for album in albums['albums']['items']:
-        
+    for album in albums['albums']['items']:        
         if(album['artists'][0]['name'] == nom_art):
             genreA = getGenre(album['name'], nom_art)
             nomA = album['name']
@@ -135,7 +130,7 @@ def create_one_album(nom_album, nom_art):
                 G.save()
             typeA = album['type']
             idArtiste = Artiste.objects.get(nom_artiste=nom_art)
-            createAlbum = Album(nom_album=nomA, type_album=album['type'], image_album=imageA, date_publication_album=dateA, id_artiste=Artiste.objects.get(nom_artiste=nom_art), spotify_id_album=spotify_idA, id_genre=Genre.objects.get(nom_genre=combine_genre(genreA)))
+            createAlbum = Album.objects.get_or_create(nom_album=nomA, type_album=album['type'], image_album=imageA, date_publication_album=dateA, id_artiste=Artiste.objects.get(nom_artiste=nom_art), spotify_id_album=spotify_idA, id_genre=Genre.objects.get(nom_genre=combine_genre(genreA)))
 
 def combine_genre(genres):
     final = ""
@@ -167,9 +162,8 @@ def getGenre(nAlbum, nArtiste):
                 create_one_artiste(a['name'], a['id'], scrap_desc_artiste(a['name']), a['images'][0]['url'])
                 create_one_recherche(a['name'])
                 return a['genres']
-    else:
-        artistes = sp.search(q="artist:"+nom_art, type="artist")
-        for a in artistes['artists']['items']:
-            if(a['name'] == nArtiste):
-                return a['genres']
+    artistes = sp.search(q="artist:"+nArtiste, type="artist")
+    for a in artistes['artists']['items']:
+        if(a['name'] == nArtiste):
+            return a['genres']
     return ""
