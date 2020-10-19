@@ -287,7 +287,7 @@ def editPlaylist(request, id=None):
                     messages.success(request ,'Playlist modifié')
                     return redirect('compte')
             form = PlaylistForm(instance=playlist)
-            return render(request, template_name='editPlaylist.html', context={'form': form})
+            return render(request, template_name='editPlaylist.html', context={'search' : search_form, 'form': form})
     return redirect('compte')
 
 @login_required
@@ -298,3 +298,26 @@ def deletePlaylistMusique(request, idPlaylist=None, idMusique=None):
             Playlist.objects.get(id=idPlaylist).id_musique.remove(musique)
             return redirect('listPlaylist', id=idPlaylist)
     return redirect('compte')
+
+@login_required
+def addPlaylistMusique(request, id=None):
+    search_form = traitementRecherche(request)
+    if not isinstance(search_form, RechercheForm):
+        return search_form
+    else:
+        if id != None:
+            user = request.user
+            playlists = Playlist.objects.all().filter(id_user=user.id)
+            musique = Musique.objects.get(id=id)
+            return render(request, template_name='addPlaylistMusique.html', context={'search' : search_form, 'playlists': playlists, 'musique': musique})
+    return redirect('index')
+
+@login_required
+def computePlaylistMusique(request, idPlaylist=None, idMusique=None):
+    if idPlaylist != None:
+        if idMusique != None:
+            playlist = Playlist.objects.get(id=idPlaylist)
+            musique = Musique.objects.get(id=idMusique)
+            playlist.id_musique.add(musique)
+            return redirect('albumsDetail', id=musique.id_album.id)
+    return redirect('index')

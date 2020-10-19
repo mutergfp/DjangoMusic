@@ -1,0 +1,40 @@
+{% extends 'baseTemplate.html' %}
+{% block content %}
+    <div id="presentation">
+        <h1>Ajout d'une musique à un playlist</h1>
+        <h3>Musique concernée : {{ musique }}</h3>
+    </div>
+    <div class="container">
+        <h3 class="mb-4 mr-4">Playlists</h3>
+        <div class="row">
+            {% for playlist in playlists%}
+            <div class="col-3 mb-2">
+                <div class="card">
+                    <img src="{{ playlist.image_playlist.url }}" class="card-img-top" alt="Image de playlist" />
+                    <div class="card-body">
+                        <h5 class="card-title">{{ playlist.nom_playlist }}</h5>
+                        <a href="{% url 'computePlaylistMusique' idPlaylist=playlist.id idMusique=musique.id %}" class="btn btn-primary mb-2">Ajouter a cette playlist</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 mb-2">
+                <p>Pas de playlist</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+{% block style %}
+    {{ block.super }}
+    <style>
+        #presentation{
+            max-width: 80%;
+            margin: auto;
+            text-align:center;
+        }
+        .card{
+            text-align:center;
+        }
+    </style>
+{% endblock style %}
