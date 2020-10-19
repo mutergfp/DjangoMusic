@@ -228,16 +228,6 @@ class PlaylistForm(ModelForm):
     class Meta:
         model = Playlist
         fields = ('nom_playlist', 'image_playlist')
-
-class PlaylistMForm(PlaylistForm):
-    def __init__(self, *args, **kwargs):
-        super(PlaylistMForm, self).__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.label= ""
-            visible.field.widget.attrs['class'] = 'form-control'
-
-    class Meta:
-        fields = ('nom_playlist', 'image_playlist', 'id_musique')
     
 
 @login_required
@@ -258,6 +248,7 @@ def addPlaylist(request):
     form = PlaylistForm()
     return render(request, template_name='addPlaylist.html', context={'search' : search_form, 'form': form})
 
+@login_required
 def listPlaylist(request, id=None):
     search_form = traitementRecherche(request)
     if not isinstance(search_form, RechercheForm):
@@ -272,27 +263,38 @@ def listPlaylist(request, id=None):
         artistes.append(Artiste.objects.get(id=album.id_artiste.id))
     return render(request, template_name='listPlaylist.html', context={'search' : search_form, 'playlist': playlist, 'musiques': musiques, 'artistes': artistes})
 
+@login_required
 def deletePlaylist(request, id=None):
     if id != None:
         if(Playlist.objects.get(id=id)):
             Playlist.objects.get(id=id).delete()
     return redirect('compte')
         
-# @login_required
-# def editPlaylist(request, id=None):
-#     search_form = traitementRecherche(request)
-#     if not isinstance(search_form, RechercheForm):
-#         return search_form
-#     else:
-#         if id == None:
-#             return redirect('compte')
-#         else:
-#             playlist = Playlist.objects.get(id=id)
-#             if request.method == "POST":
-#                 form = PlaylistMForm(request.POST, instance=playlist)
-#                 if form.is_valid():
-#                     playlist = form.save()
-#                     messages.success(request ,'Playlist modifié')
-#                     return redirect('compte')
-#     form = PlaylistMForm()
-#     return render(request, template_name='addPlaylist.html', context={'form': form})
+@login_required
+def editPlaylist(request, id=None):
+    search_form = traitementRecherche(request)
+    if not isinstance(search_form, RechercheForm):
+        return search_form
+    else:
+        if id == None:
+            return redirect('compte')
+        else:
+            playlist = Playlist.objects.get(id=id)
+            if request.method == "POST":
+                form = PlaylistForm(request.POST, instance=playlist)
+                if form.is_valid():
+                    playlist = form.save()
+                    messages.success(request ,'Playlist modifié')
+                    return redirect('compte')
+            form = PlaylistForm(instance=playlist)
+            return render(request, template_name='editPlaylist.html', context={'form': form})
+    return redirect('compte')
+
+@login_required
+def deletePlaylistMusique(request, idPlaylist=None, idMusique=None):
+    if idPlaylist != None:
+        if idMusique != None:
+            musique = Musique.objects.get(id=idMusique)
+            Playlist.objects.get(id=idPlaylist).id_musique.remove(musique)
+            return redirect('listPlaylist', id=idPlaylist)
+    return redirect('compte')

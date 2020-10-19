@@ -19,7 +19,7 @@
                         <h5 class="card-title">{{ playlist.nom_playlist }}</h5>
                         <a href="{% url 'listPlaylist' id=playlist.id%}" class="btn btn-primary mb-2">Voir la playlist</a>
                         <div class="d-flex justify-content-end">
-                            <a href="#" class="mr-1"><i class="fas fa-edit"></i></a>
+                            <a href="{% url 'editPlaylist' id=playlist.id %}" class="mr-1"><i class="fas fa-edit"></i></a>
                             <a href="{% url 'deletePlaylist' id=playlist.id %}" class="delete"><i class="fas fa-times"></i></a>
                         </div>
                     </div>
