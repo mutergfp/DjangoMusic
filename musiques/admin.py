@@ -6,7 +6,7 @@ class ArtisteAdmin(admin.ModelAdmin):
     list_display=('id', 'nom_artiste', 'description_artiste', 'image_artiste', 'spotify_id_artiste')
 
 class AlbumAdmin(admin.ModelAdmin):
-    list_display=('nom_album', 'type_album', 'image_album', 'date_publication_album', 'spotify_id_album')
+    list_display=('id', 'nom_album', 'type_album', 'image_album', 'date_publication_album', 'spotify_id_album')
 
 class MusiqueAdmin(admin.ModelAdmin):
     list_display=('titre_musique', 'duree_musique')
