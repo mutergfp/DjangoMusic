@@ -23,6 +23,7 @@ def create_one_scrap_album(lien):
     detailsAlbum = requests.get("https://www.allformusic.fr/"+lien).text
     album = []
     sons = []
+    time = []
     soup = BeautifulSoup(detailsAlbum, 'lxml')
     titre = soup.find('span', itemprop="name")
     print(titre.text)
@@ -37,11 +38,12 @@ def create_one_scrap_album(lien):
     album = formatage_album(album)    
     musiques = soup.find('ol',class_="songsct")
     for musique in musiques:
+        time.append(musique.text[-5:-1])
         chaine = musique.text[18:-6]
         if(ord(chaine[0]) == 160):
             chaine= musique.text[19:-6]
         sons.append(chaine)
-    print(album)
+    print(time)
     print("\n")
 
 def formatage_album(album):
@@ -59,4 +61,4 @@ def formatage_album(album):
             newAlbum.append(case[14:len(case)])
         i+=1
     return newAlbum
-scrap_disco("booba")
+scrap_disco("vald")

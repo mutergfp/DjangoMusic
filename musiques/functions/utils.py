@@ -197,6 +197,7 @@ def create_one_scrap_album(lien, nom_album):
     detailsAlbum = requests.get("https://www.allformusic.fr/"+lien).text
     album = []
     sons = []
+    time = []
     soup = BeautifulSoup(detailsAlbum, 'lxml')
     titre = soup.find('span', itemprop="name")
     if(titre.text == nom_album):
@@ -211,6 +212,7 @@ def create_one_scrap_album(lien, nom_album):
         album = formatage_album(album)    
         musiques = soup.find('ol',class_="songsct")
         for musique in musiques:
+            time.append(musique.text[-5:-1])
             chaine = musique.text[18:-6]
             if(ord(chaine[0]) == 160):
                 chaine= musique.text[19:-6]
@@ -225,7 +227,7 @@ def create_one_scrap_album(lien, nom_album):
         except Album.DoesNotExist:
             create_one_album(nom_album, album[1])
         getAlbum = Album.objects.get(nom_album=nom_album, id_artiste=Artiste.objects.get(nom_artiste=album[1]))
-        create_one_musique(getAlbum, sons)
+        create_one_musique(getAlbum, sons, time)
                     
 
 def formatage_album(album):
@@ -244,12 +246,14 @@ def formatage_album(album):
         i+=1
     return newAlbum
 
-def create_one_musique(album, musiques):
+def create_one_musique(album, musiques, temps):
     from musiques.models import Musique, Album, Artiste
+    i = 0
     for musique in musiques:
         try:
             issetMusique = Musique.objects.get(titre_musique=musique, id_artiste=album.id_artiste)
         except Musique.DoesNotExist:
-            M = Musique(titre_musique=musique, duree_musique="00:00", id_album=album)
+            M = Musique(titre_musique=musique, duree_musique=temps[i], id_album=album)
             M.save()
             M.id_artiste.add(album.id_artiste)
+        i+=1
