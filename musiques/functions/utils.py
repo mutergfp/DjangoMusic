@@ -40,7 +40,6 @@ def scrap_desc_artiste(artiste):
     else:
         return ArtisteDescription.text
 
-
 def spotify_create_artiste(name_artiste):
     import spotipy
     from spotipy.oauth2 import SpotifyClientCredentials
@@ -62,10 +61,17 @@ def spotify_create_artiste(name_artiste):
             else:
                 A = create_one_artiste(artiste['name'], artiste['id'], scrap_desc_artiste(artiste['name']), artistes['artists']['items'][i]['images'][0]['url'])
             create_one_recherche(artiste['name'])
-            i+=1 
+        i+=1 
 
 def create_one_artiste(nom, id_spotify, description=None, image=None):
-    from musiques.models import Artiste
+    from musiques.models import Artiste, Album, Musique
+    import spotipy
+    from spotipy.oauth2 import SpotifyClientCredentials
+    cid ="b462b99712f64dcb94f3aab35a21827a"
+    secret="cf75ea5330b44a8d8024d8ecc31c8b52"
+    client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
+    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+
     if(image == None):
         A = Artiste(nom_artiste=nom, description_artiste=description, spotify_id_artiste=id_spotify)
     elif(description == None): 
@@ -75,63 +81,37 @@ def create_one_artiste(nom, id_spotify, description=None, image=None):
     else:
         A = Artiste(nom_artiste=nom, description_artiste=description, image_artiste=image, spotify_id_artiste=id_spotify)
     A.save()
-    # nous devons maintenant importer tout ses albums ainsi que ses musiques à partir d'ici et nul part autre !!!!!!
-    
+    artiste = Artiste.objects.get(nom_artiste=nom, spotify_id_artiste=id_spotify)
+    create_artist_albums(artiste)
+    # nous devons maintenant importer toutes ses musiques à partir d'ici et nul part autre !!!!!!
+
+def create_one_album(nom, type, image, date, artiste, id_spotify, genre, lien):
+    from musiques.models import Album, Artiste
+    A, created = Album.objects.get_or_create(nom_album=nom, type_album=type, image_album=image, date_publication_album=date, id_artiste=artiste, spotify_id_album=id_spotify, id_genre=genre, lien_album=lien)
+    create_musiques(A)
+
 def create_one_recherche(contenu):
     from musiques.models import Recherche
     r = Recherche(contenu_recherche=contenu)
     r.save()
 
-def spotify_create_album(nom_album):
-    import spotipy
-    from spotipy.oauth2 import SpotifyClientCredentials
-    from musiques.models import Album
-    cid ="b462b99712f64dcb94f3aab35a21827a"
-    secret="cf75ea5330b44a8d8024d8ecc31c8b52"
+def create_one_musique(album, titre, duree):
+    from musiques.models import Artiste, Musique, Album
+    M, created = Musique.objects.get_or_create(titre_musique=titre, duree_musique=duree, id_album=album)
+    M.id_artiste.add(album.id_artiste)
 
-    client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+def create_artist_albums(artiste):
+    import requests
+    from bs4 import BeautifulSoup
+    html = requests.get("https://www.allformusic.fr/"+replace_special(artiste.nom_artiste.lower())+"/discographie").text
 
-    albums = sp.search(q="album:"+nom_album, type="album")
-    
-    for album in albums['albums']['items']:
-        try:
-            issetAlbum = Album.objects.get(nom_album=nom_album)
-        except Album.DoesNotExist:
-            create_one_album(album['name'], album['artists'][0]['name'])
-        
-def create_one_album(nom_album, nom_art):
-    import spotipy
-    from spotipy.oauth2 import SpotifyClientCredentials
-    from musiques.models import Album, Artiste, Genre
-    cid ="b462b99712f64dcb94f3aab35a21827a"
-    secret="cf75ea5330b44a8d8024d8ecc31c8b52"
+    soup = BeautifulSoup(html, 'lxml')
 
-    client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-    genreA = ""
-    albums = sp.search(q="album:"+nom_album, type="album")
-    for album in albums['albums']['items']:        
-        if(album['artists'][0]['name'] == nom_art):
-            genreA = getGenre(album['name'], nom_art)
-            nomA = album['name']
-            spotify_idA = album['id']
-            if not album['images'][0]['url']:
-                imageA = None
-            else:
-                imageA = album['images'][0]['url']
-            if not album['release_date']:
-                dateA = None
-            else:
-                dateA = album['release_date']
-            try:
-                issetGenre = Genre.objects.get(nom_genre=combine_genre(genreA))
-            except Genre.DoesNotExist:
-                G = Genre(nom_genre=combine_genre(genreA), description_genre=combine_genre(genreA))
-                G.save()
-            typeA = album['type']
-            createAlbum = Album.objects.get_or_create(nom_album=nomA, type_album=album['type'], image_album=imageA, date_publication_album=dateA, id_artiste=Artiste.objects.get(nom_artiste=nom_art), spotify_id_album=spotify_idA, id_genre=Genre.objects.get(nom_genre=combine_genre(genreA)))
-            scrap_disco(nom_art, nom_album)
+    AlbumSearch = soup.find('article', id = "disco-album")
+    if AlbumSearch:
+        for albums in AlbumSearch.ol:
+            date_sortie = albums.span.text
+            create_one_album(albums.strong.text, "Album", albums.img['data-src'], albums.span.text, artiste, "0", get_or_create_genre(albums.strong.text, artiste.nom_artiste), albums.a['href'])
 
 def combine_genre(genres):
     final = ""
@@ -145,115 +125,34 @@ def combine_genre(genres):
         final = "Aucun"
     return final
 
-def getGenre(nAlbum, nArtiste):
+def get_or_create_genre(nAlbum, nArtiste):
     import spotipy
     from spotipy.oauth2 import SpotifyClientCredentials
-    from musiques.models import Artiste
+    from musiques.models import Artiste, Genre
     cid ="b462b99712f64dcb94f3aab35a21827a"
     secret="cf75ea5330b44a8d8024d8ecc31c8b52"
-
     client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-    try:
-        artiste = Artiste.objects.get(nom_artiste=nArtiste)
-    except Artiste.DoesNotExist:
-        artistes = sp.search(q="artist:"+nArtiste, type="artist")
-        for a in artistes['artists']['items']:
-            if(a['name'] == nArtiste):
-                create_one_artiste(a['name'], a['id'], scrap_desc_artiste(a['name']), a['images'][0]['url'])
-                create_one_recherche(a['name'])
-                return a['genres']
+
     artistes = sp.search(q="artist:"+nArtiste, type="artist")
     for a in artistes['artists']['items']:
         if(a['name'] == nArtiste):
-            return a['genres']
-    return ""
+            genres = a['genres']
+    if not genres:
+        genre = combine_genre("")
+    else:
+        genre = combine_genre(genres)
+    G, created = Genre.objects.get_or_create(nom_genre=genre, description_genre=genre)
+    return G
 
-def scrap_disco(nom_artiste, nom_album):
+def create_musiques(album):
     import requests
     from bs4 import BeautifulSoup
-    URL = "https://www.allformusic.fr/"+replace_special(nom_artiste.lower())+"/discographie"
-    html = requests.get(URL).text
+    html = requests.get("https://www.allformusic.fr/"+album.lien_album).text
 
     soup = BeautifulSoup(html, 'lxml')
-
-    AlbumSearch = soup.find('article', id = "disco-album")
-    if AlbumSearch:
-        for albums in AlbumSearch.ol:
-            create_one_scrap_album(albums.a['href'], nom_album)
-
-def create_one_scrap_album(lien, nom_album):
-    from musiques.models import Artiste, Album
-    import spotipy
-    from spotipy.oauth2 import SpotifyClientCredentials
-    from musiques.models import Artiste
-    import requests
-    from bs4 import BeautifulSoup
-    cid ="b462b99712f64dcb94f3aab35a21827a"
-    secret="cf75ea5330b44a8d8024d8ecc31c8b52"
-    client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-
-    detailsAlbum = requests.get("https://www.allformusic.fr/"+lien).text
-    album = []
-    sons = []
-    time = []
-    soup = BeautifulSoup(detailsAlbum, 'lxml')
-    titre = soup.find('span', itemprop="name")
-    if(titre.text == nom_album):
-        infos = soup.find('div', class_ = "pochette-300")
-        album.append(infos.figure.img['src'])
-        infos = soup.find('div', id="infos")
-        i = 0
-        for info in infos.ul:
-            if(i != 1 or i != 4):
-                album.append(info.text)
-            i+=1
-        album = formatage_album(album)    
-        musiques = soup.find('ol',class_="songsct")
-        for musique in musiques:
-            time.append(musique.text[-5:-1])
-            chaine = musique.text[18:-6]
-            if(ord(chaine[0]) == 160):
-                chaine= musique.text[19:-6]
-            sons.append(chaine)
-        try:
-            issetArtiste = Artiste.objects.get(nom_artiste=album[1])
-        except Artiste.DoesNotExist:
-            spotify_create_artiste(album[1])
-        getArtiste = Artiste.objects.get(nom_artiste=album[1])
-        try:
-            issetAlbum = Album.objects.get(nom_album=nom_album, id_artiste=Artiste.objects.get(nom_artiste=album[1]))
-        except Album.DoesNotExist:
-            create_one_album(nom_album, album[1])
-        getAlbum = Album.objects.get(nom_album=nom_album, id_artiste=Artiste.objects.get(nom_artiste=album[1]))
-        create_one_musique(getAlbum, sons, time)
-                    
-
-def formatage_album(album):
-    newAlbum = []
-    newAlbum.append(album[0])
-    del album[2]
-    del album[-1]
-    i = 0
-    for case in album:
-        if(i == 1):
-            newAlbum.append(case[10:len(case)])
-        if(i == 2):
-            newAlbum.append(case[7:len(case)])
-        if(i == 3):
-            newAlbum.append(case[14:len(case)])
-        i+=1
-    return newAlbum
-
-def create_one_musique(album, musiques, temps):
-    from musiques.models import Musique, Album, Artiste
-    i = 0
-    for musique in musiques:
-        try:
-            issetMusique = Musique.objects.get(titre_musique=musique, id_artiste=album.id_artiste)
-        except Musique.DoesNotExist:
-            M = Musique(titre_musique=musique, duree_musique=temps[i], id_album=album)
-            M.save()
-            M.id_artiste.add(album.id_artiste)
-        i+=1
+    SongList = soup.findAll('li', itemprop="tracks")
+    for song in SongList:
+        create_one_musique(album, song.strong.text, song.text[-5:-1])
+   
+    

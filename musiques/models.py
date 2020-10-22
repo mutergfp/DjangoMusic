@@ -30,8 +30,9 @@ class Album(models.Model):
     id_artiste = models.ForeignKey(Artiste, verbose_name=("Artiste de l'album"), on_delete=models.CASCADE, null=False)
     spotify_id_album = models.TextField(verbose_name=("ID Spotify de l'album"), null=True)
     id_genre = models.ForeignKey(Genre, verbose_name=("Genre de l'album"), on_delete=models.CASCADE, null=False)
+    lien_album = models.TextField(verbose_name=("Lien de l'album sur AllForMusic"), null=True)
     def __str__(self):
-        return self.nom_album + ' (' + str(self.date_publication_album) + ')'
+        return self.nom_album
 
 class Musique(models.Model):
     titre_musique = models.CharField(verbose_name=("Titre de la musique"), max_length=255, null=False)

@@ -38,6 +38,16 @@
             {% endif %}
         {% endfor %}
         </div>
-        <div class="col-md h3 text-center">{{ musique }}</div>
+        <div class="col-md h3 text-center">
+        {% for a in musique %}
+            {% if a != "Aucun résultat trouvé" %}
+                <a href="{% url 'albumsDetail' id=a.id_album.id %}">
+            {% endif %}
+                {{ a }}
+            {% if a.id != "Aucun résultat trouvé" %}
+                </a><br>
+            {% endif %}
+        {% endfor %}
+        </div>
     </div>
 {% endblock %}

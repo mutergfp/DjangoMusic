@@ -33,7 +33,6 @@ def resultSearch(request, text=None):
             issetRecherche = Recherche.objects.get(contenu_recherche = text)
         except Recherche.DoesNotExist:
             spotify_create_artiste(text)
-            spotify_create_album(text)
         else:
             issetRecherche.compteur_recherche += 1
             issetRecherche.save()
@@ -48,7 +47,10 @@ def resultSearch(request, text=None):
         except Album.DoesNotExist:
             resultAlbum = "Aucun résultat trouvé"
 
-        resultMusique = "Aucun résultat trouvé"
+        try:
+            resultMusique = Musique.objects.filter(titre_musique__contains=text)
+        except:
+            resultMusique = "Aucun résultat trouvé"
 
         return render(request, 'resultatRecherche.html', {'text': text, 'artiste' : resultArtiste, 'album' : resultAlbum, 'musique': resultMusique})
 
