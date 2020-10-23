@@ -40,6 +40,9 @@
             {% block content %}
             {% endblock %}
         </main >
+        <footer class="d-flex align-items-end justify-content-center">
+            <a href="{% url 'credit' %}">DjangoMusic - University project</p>
+        </footer>   
         {% block js %}
             <script src="https://kit.fontawesome.com/f84f11f6f2.js" crossorigin="anonymous"></script>
             <script src="{% static 'node_modules/jquery-slim/dist/jquery-slim.min.js' %}"></script>
@@ -55,9 +58,11 @@
                 position: fixed;
                 top: 0px;
                 z-index: 1;
+                border-bottom: 1px solid black;
             }
             main{
                 margin-top: 130px;
+                margin-bottom: 90px;
             }
             #divHeader{
                 display: flex;
@@ -81,6 +86,14 @@
             }
             #login{
                 margin-top: auto;
+            }
+            footer{
+                width:100%;
+                height: 60px;
+                background-color: #8FA970;
+                bottom: 0;
+                position: fixed;
+                border-top: 1px solid black;
             }
         </style>
         {% endblock %}
