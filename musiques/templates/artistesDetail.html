@@ -22,7 +22,7 @@
             {% for album in albums%}
             <div class="col-3 mb-2">
                 <div class="card">
-                    <img src="{{ album.image_album.url }}" class="card-img-top" alt="Image d'album">
+                    <img src="{{ album.image_album }}" class="card-img-top" alt="Image d'album">
                     <div class="card-body">
                         <h5 class="card-title">{{ album.nom_album}}</h5>
                         <p class="card-text"><i class="fas fa-calendar-day"></i> {{ album.date_publication_album}}</p>

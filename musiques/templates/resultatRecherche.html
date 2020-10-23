@@ -11,9 +11,39 @@
         <div class="col-md h4 text-center">Musique</div>
     </div>
     <div class="row">
-        <div class="col-md text-center results">{{ artiste }}</div>
-        <div class="col-md text-center">{{ album }}</div>
-        <div class="col-md text-center">{{ musique }}</div>
+        <div class="col-md h3 text-center">
+        {% for a in artiste %}
+            {% if a != "Aucun résultat trouvé" %}
+                <a href="{% url 'artistesDetail' id=a.id %}">
+            {% endif %}
+                {{ a }}
+            {% if a.id != "Aucun résultat trouvé" %}
+                </a><br>
+            {% endif %}
+        {% endfor %}
+        </div>
+        <div class="col-md h3 text-center"> 
+        {% for a in album %}
+            {% if a != "Aucun résultat trouvé" %}
+                <a href="{% url 'albumsDetail' id=a.id %}">
+            {% endif %}
+                {{ a }}
+            {% if a.id != "Aucun résultat trouvé" %}
+                </a><br>
+            {% endif %}
+        {% endfor %}
+        </div>
+        <div class="col-md h3 text-center">
+        {% for a in musique %}
+            {% if a != "Aucun résultat trouvé" %}
+                <a href="{% url 'albumsDetail' id=a.id_album.id %}">
+            {% endif %}
+                {{ a }}
+            {% if a.id != "Aucun résultat trouvé" %}
+                </a><br>
+            {% endif %}
+        {% endfor %}
+        </div>
     </div>
 {% endblock %}
 {% block style %}
