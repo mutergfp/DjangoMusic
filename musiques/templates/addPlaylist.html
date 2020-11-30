@@ -2,12 +2,14 @@
 {% load static %}
 
 {% block content %}
-    <h1 class="mb-3">Créer une playlist</h1>
-    <form class="d-flex flex-column justify-content-center align-items-center w-50 m-auto" method="POST" action="">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Créer" class="btn btn-primary">
-    </form>
+    <div class="container">
+        <h1 class="mb-3">Créer une playlist</h1>
+        <form class="d-flex flex-column justify-content-center align-items-center w-50 m-auto" method="POST" action="">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Créer" class="btn btn-primary">
+        </form>
+    </div>
 {% endblock content %}
 
 {% block style %}

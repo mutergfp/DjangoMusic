@@ -42,6 +42,7 @@ def index(request):
         return render(request, 'index.html', {'search': search_form, })
 
 def resultSearch(request, text=None):
+    search_form = traitementRecherche(request)
     if(text != None):
         try: 
             issetRecherche = Recherche.objects.get(contenu_recherche = text)
@@ -65,8 +66,11 @@ def resultSearch(request, text=None):
             resultMusique = Musique.objects.filter(titre_musique__contains=text)
         except:
             resultMusique = "Aucun résultat trouvé"
-
-        return render(request, 'resultatRecherche.html', {'text': text, 'artiste' : resultArtiste, 'album' : resultAlbum, 'musique': resultMusique})
+        
+        if not isinstance(search_form, RechercheForm):
+            return search_form
+        else:
+            return render(request, 'resultatRecherche.html', {'text': text, 'artiste' : resultArtiste, 'album' : resultAlbum, 'musique': resultMusique, 'search': search_form})
 
     return render(request, template_name='index.html')
 
