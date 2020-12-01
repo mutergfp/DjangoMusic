@@ -51,6 +51,6 @@ class Recherche(models.Model):
 
 class Playlist(models.Model):
     nom_playlist = models.CharField(verbose_name=("Nom de la playlist"), max_length=50, null=False)
-    image_playlist = models.ImageField(verbose_name=("Image de la playlist"), upload_to="assets/img_playlists", default="/assets/default/img_album_default-min.jpg")
+    image_playlist = models.ImageField(verbose_name=("Image de la playlist"), upload_to="assets/img_playlists", default="/assets/default/img_playlist_default-min.jpg")
     id_user = models.ForeignKey(User, verbose_name=("Utilisateur de la playlist"), on_delete=models.CASCADE)
     id_musique = models.ManyToManyField(Musique, verbose_name=("Musique de la playlist"))
