@@ -8,10 +8,10 @@ Par téléchargement du dossier .zip : Décompressez le dossier zippé
 
 ## Mise en place du projet
 
-1. Dans un terminal, se positionner dans à la racine du projet
-2. Créer un dossier `static` à la racine du projet
-3. Entrez `source ~/venv3/bin/activate`
-4. Télécharger les modules suivant :
+1. Dans un terminal, positionnez-vous dans à la racine du projet
+2. Créez un dossier `static` à la racine du projet
+3. Dans le terminal, entrez `source ~/venv3/bin/activate`
+4. Téléchargez les modules suivant :
   - Spotipy : `pip install spotipy`
   - BeautifulSoup : `pip install beautifulsoup4`
   - lxml : `pip install lxml`
